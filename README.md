@@ -113,56 +113,9 @@ Finalmente con los Subneteos terminados pasamos a la construcción de la tabla d
 
 ![Tabla de direccionamiento en la red empresarial](/img/TABLA_DIRECCIONAMIENTO.png)
 
-# Configuarción
 
-## Multilayer switch 
 
-**Requerimientos**
-Se necesita utilizar un multilayer switch de numero de referencia 3650
 
-**configuración**
-Un multilayer switch es un switch que funciona como un dispositivo de capa 3, para el caso del laboratorio lo utilizaremos como el puente entre la intranet de Madrid con el router de España, la configuración que se utilizo para este se extrajo de un video se YouTube y de diferentes foros . Lo primero es que estuviese configurado todo lo relacionado con los switches y las configuraciones de las vlan en cada uno de ellos, después de eso se realizó la configuración básica que se realiza en todos los dispositivos, la asignación de las contraseñas y el nombre para el multilayer, una vez estas configuraciones completadas, lo primero que se hizo fue crear las vlans dentro del multilayer con los comandos ya aprendidos en proyectos anteriores,
->```
->MLSW(config)#VLAN 25
->
->MLSW(config-vlan)#name Tesoreria
->
->MLSW(config-vlan)#vlan 50
->
->MLSW(config-vlan)#name Vice
->
->MLSW(config-vlan)#vlan 2
->
->MLSW(config-vlan)#name Nativa
-
-luego se configuro el enlace troncal en el rango de interfaces del gigabit Ethernet 1/0/1 y el gigabit Ethernet 1/0/3 en el cual se hizo la configuración de la vlan 2 como la nativa para el procedimiento del truncamiento,
->```
->MLSW(config)#interface range gig 1/0/1-3
->
->MLSW(config-if-range)# switchport mode trunk
->
->MLSW(config-if-range)# switchport trunk native vlan 2
-
-ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta vlan 2 
->```
->MLSW(config)#interface gig 1/0/1
->
->MLSW(config-if-range)# switchport mode access
->
->MLSW(config-if-range)# switchport access native vlan 2
-
-como se puede ver en la siguiente imagen:
-![SHOW RUNNING-CONFIG DEL MULTILAYER SWITCH](/img/CONFIG_MULTILAYER.png)
-
-Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de res 255.255.254.0) 
->```
->MLSW(config)#interface VLAN 2
->
->MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
-
-y por ultimo se le asigno la puerta de acceso 10.111.4.1 
->```
->MLSW(config)#ip default-gateway 10.111.4.1 
 =======
 # Configuración
 
@@ -319,8 +272,56 @@ ISP_NET(config-if)#ip address 190.85.211.17 255.255.255.252
 ISP_NET(config-if)#no shutdown
 ISP_NET(config-if)#exit
 ```
->>>>>>> 78ba47fdfa4f439e0181e8840afdc0dc8836b4b9
 
+
+## Multilayer switch 
+
+**Requerimientos**
+Se necesita utilizar un multilayer switch de numero de referencia 3650
+
+**configuración**
+Un multilayer switch es un switch que funciona como un dispositivo de capa 3, para el caso del laboratorio lo utilizaremos como el puente entre la intranet de Madrid con el router de España, la configuración que se utilizo para este se extrajo de un video se YouTube y de diferentes foros . Lo primero es que estuviese configurado todo lo relacionado con los switches y las configuraciones de las vlan en cada uno de ellos, después de eso se realizó la configuración básica que se realiza en todos los dispositivos, la asignación de las contraseñas y el nombre para el multilayer, una vez estas configuraciones completadas, lo primero que se hizo fue crear las vlans dentro del multilayer con los comandos ya aprendidos en proyectos anteriores,
+>```
+>MLSW(config)#VLAN 25
+>
+>MLSW(config-vlan)#name Tesoreria
+>
+>MLSW(config-vlan)#vlan 50
+>
+>MLSW(config-vlan)#name Vice
+>
+>MLSW(config-vlan)#vlan 2
+>
+>MLSW(config-vlan)#name Nativa
+
+luego se configuro el enlace troncal en el rango de interfaces del gigabit Ethernet 1/0/1 y el gigabit Ethernet 1/0/3 en el cual se hizo la configuración de la vlan 2 como la nativa para el procedimiento del truncamiento,
+>```
+>MLSW(config)#interface range gig 1/0/1-3
+>
+>MLSW(config-if-range)# switchport mode trunk
+>
+>MLSW(config-if-range)# switchport trunk native vlan 2
+
+ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta vlan 2 
+>```
+>MLSW(config)#interface gig 1/0/1
+>
+>MLSW(config-if-range)# switchport mode access
+>
+>MLSW(config-if-range)# switchport access native vlan 2
+
+como se puede ver en la siguiente imagen:
+![SHOW RUNNING-CONFIG DEL MULTILAYER SWITCH](/img/CONFIG_MULTILAYER.png)
+
+Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de res 255.255.254.0) 
+>```
+>MLSW(config)#interface VLAN 2
+>
+>MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
+
+y por ultimo se le asigno la puerta de acceso 10.111.4.1 
+>```
+>MLSW(config)#ip default-gateway 10.111.4.1 
 ## Access Control Lists (ACL's)
 **Requerimientos**: El Departamento de Tecnología solicitó los siguientes filtros de paquetes: Todos los hosts de la Intranet Bogotá acceden al servidor Web a través del protocolo HTTPs (puerto 443) y no por HTTP (puerto 80). Los usuarios del área de Vicepresidencia en la Intranet Madrid deben tener restringido el acceso al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). Los usuarios del Departamento de Tesorería sólo deben acceder al servidor Web por el puerto 443. Finalmente, El Departamento de Tecnología accede al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). 
 
