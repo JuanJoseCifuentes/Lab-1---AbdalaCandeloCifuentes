@@ -248,7 +248,7 @@ A continuación, se puede ver como quedaría la guía de enrutamiento de uno de 
 
 Podemos ver como la gran mayoría empieza con la letra D, lo que según las instrucciones del comando “show ip route” se refiere a las direcciones de redes aprendidas por medio del protocolo EIGRP, o en otras palabras, las redes que los otros routers le proporcionaron al router en el que nos encontramos, acompañadas de la dirección de la interfaz del dispositivo que las proporciono y por cual interfaz se recibió la información en este caso podemos ver que solo aparece la dirección del Serial 0/1/1 del router ISP_ESP porque es la única conexión que tiene el router R2_ESP con la red de routers. Además, podemos ver las direcciones de las redes que están directamente conectadas a el router.
 
-## Servidores y PCs
+## Servidores
 
 La configuración de los diferentes servidores es muy simple, puesto que solo hay que configurar el servicio deseado desde la pestaña de servicios.
 
