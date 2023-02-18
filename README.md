@@ -258,7 +258,7 @@ Se le asigna una dirección estática dentro de la VLAN 100 (requerimiento) y lu
 ![Configuracion del server DHCP](/img/dhcp.png)
 
 **Servidor DNS:**
-Después de .
+Después de asignarle una dirección estática, es tan simple como ir a la pestaña de servicios y asignar el nombre requerido (iniciales_integrantes.net) junto con la variación www a la dirección que tiene el servido Web.
 
 ![Configuracion del server DHCP](/img/dns.png)
 
