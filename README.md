@@ -274,49 +274,46 @@ Se necesita utilizar un multilayer switch de numero de referencia 3650
 
 **configuración**
 Un multilayer switch es un switch que funciona como un dispositivo de capa 3, para el caso del laboratorio lo utilizaremos como el puente entre la intranet de Madrid con el router de España, la configuración que se utilizo para este se extrajo de un video se YouTube y de diferentes foros . Lo primero es que estuviese configurado todo lo relacionado con los switches y las configuraciones de las vlan en cada uno de ellos, después de eso se realizó la configuración básica que se realiza en todos los dispositivos, la asignación de las contraseñas y el nombre para el multilayer, una vez estas configuraciones completadas, lo primero que se hizo fue crear las vlans dentro del multilayer con los comandos ya aprendidos en proyectos anteriores,
->```
->MLSW(config)#VLAN 25
->
->MLSW(config-vlan)#name Tesoreria
->
->MLSW(config-vlan)#vlan 50
->
->MLSW(config-vlan)#name Vice
->
->MLSW(config-vlan)#vlan 2
->
->MLSW(config-vlan)#name Nativa
+```
+MLSW(config)#VLAN 25
+MLSW(config-vlan)#name Tesoreria
+MLSW(config-vlan)#vlan 50
+MLSW(config-vlan)#name Vice
+MLSW(config-vlan)#vlan 2
+MLSW(config-vlan)#name Nativa
+```
 
-luego se configuro el enlace troncal en el rango de interfaces del gigabit Ethernet 1/0/1 y el gigabit Ethernet 1/0/3 en el cual se hizo la configuración de la vlan 2 como la nativa para el procedimiento del truncamiento,
->```
->MLSW(config)#interface range gig 1/0/1-3
->
->MLSW(config-if-range)# switchport mode trunk
->
->MLSW(config-if-range)# switchport trunk native vlan 2
+Luego se configuro el enlace troncal en el rango de interfaces del gigabit Ethernet 1/0/1 y el gigabit Ethernet 1/0/3 en el cual se hizo la configuración de la vlan 2 como la nativa para el procedimiento del truncamiento,
+```
+MLSW(config)#interface range gig 1/0/1-3
+MLSW(config-if-range)# switchport mode trunk
+MLSW(config-if-range)# switchport trunk native vlan 2
+```
 
-ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta vlan 2 
->```
->MLSW(config)#interface gig 1/0/1
->
->MLSW(config-if-range)# switchport mode access
->
->MLSW(config-if-range)# switchport access native vlan 2
+Ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta vlan 2 
 
-como se puede ver en la siguiente imagen:
+```
+MLSW(config)#interface gig 1/0/1
+MLSW(config-if-range)# switchport mode access
+MLSW(config-if-range)# switchport access native vlan 2
+```
+
+Como se puede ver en la siguiente imagen:
 
 ![SHOW RUNNING-CONFIG DEL MULTILAYER SWITCH](/img/CONFIG_MULTILAYER.png)
 
-Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de res 255.255.254.0) 
->```
->MLSW(config)#interface VLAN 2
->
->MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
+Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de red 255.255.254.0) 
+```
+MLSW(config)#interface VLAN 2
+MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
+```
 
-y por ultimo se le asigno la puerta de acceso 10.111.4.1 
+Por ultimo se le asigno la puerta de acceso 10.111.4.1 
 
->```
->MLSW(config)#ip default-gateway 10.111.4.1 
+```
+MLSW(config)#ip default-gateway 10.111.4.1 
+```
+
 ## Access Control Lists (ACL's)
 **Requerimientos**: El Departamento de Tecnología solicitó los siguientes filtros de paquetes: Todos los hosts de la Intranet Bogotá acceden al servidor Web a través del protocolo HTTPs (puerto 443) y no por HTTP (puerto 80). Los usuarios del área de Vicepresidencia en la Intranet Madrid deben tener restringido el acceso al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). Los usuarios del Departamento de Tesorería sólo deben acceder al servidor Web por el puerto 443. Finalmente, El Departamento de Tecnología accede al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). 
 
@@ -416,14 +413,45 @@ Se le asigna una dirección estática dentro de la VLAN 100 (requerimiento) y lu
 **Servidor DNS:**
 Después de asignarle una dirección estática, es tan simple como ir a la pestaña de servicios y asignar el nombre requerido (iniciales_integrantes.net) junto con la variación www a la dirección que tiene el servido Web.
 
-![Configuracion del server DHCP](/img/dns.png)
+![Configuracion del server DNS](/img/dns.png)
 
 **Servidor Web:**
-Se le asigna una dirección estática dentro de la VLAN 100 (requerimiento) y luego se configuran dos pools de direcciones IP, con la predeterminada "serverPool" sirviendo como la pool de la VLAN en la que se encuentra.
+Puesto que el servicio HTTP ya viene puesto por defecto, tan solo hay que subir los archivos de una web personalizada y asignar una dirección IP estática.
 
-![Configuracion del server DHCP](/img/web.png)
+![Configuracion del server Web](/img/web.png)
 
 # Verificación
+
+## Protocolo PAT
+
+Para verificar que el servicio NAT overload/PAT esté funcionando correctamente, podemos analizar el comportamiento de los paquetes que salen de una red que tiene este protocolo configurado.
+
+Por ejemplo, tomemos un vistazo a este mensaje ping que se realiza desde el PC8, en Madrid, hacia el servidor Web.
+
+![Mensaje PDU saliendo de la red Madrid](/img/topologia_nat.png)
+
+Los detalles del PDU en este punto, en el que el mensaje esta saliendo de su red mediante el router, son los siguientes.
+
+![Detalles del PDU en el router 2](/img/udp_nat.png)
+
+Como podemos ver en los detalles, los pasos desde el 4-6 describen como el router identifica que el mensaje que está saliendo viene de un host el cual está dentro de la lista que configuramos como inside en el protocolo NAT, por lo que traduce el paquete a la dirección pública que tiene configurada y guarda su información en la lista de traducción.
+
+De igual forma, cuando el paqute regresa con la respuesta, podemos ver estos detalles en el PDU:
+
+![Detalles del PDU en el router 2](/img/udp_nat1.png)
+
+El router reconoce que la dirección de destino del paquete está dentro de su tabla de traducción NAT, por lo que devuelve la dirección a la que era originalmente antes de dejar la red, permitiendo que el paquete vuelva exitosamente.
+
+## Enrutamiento EIGRP
+
+Usando el mismo UDP de la demostración anterior, pero esta vez fijándonos en lo que ocurra mientras está en la red WAN, podemos ver lo siguiente:
+
+![Mensaje PDU en el internet](/img/topologia_eigrp.png)
+![Detalles del PDU en el router ISP](/img/eigrp.png)
+
+Como podemos ver, en cada router podemos ver que, al momento de llegar el mensaje, se verifica la red a la que quiere llegar y se contrasta contra la tabla de enrutamiento de cada router. Puesto que cada router tiene una entrada en su tabla perteneciente cada red de la topología gracias al correcto funcionamiento del protocolo EIGRP, el mensaje puede ser redireccionado exitosamente.
+
+
 ## PDU's
 
 Para esta parte consideramos analizar el flujo bidireccional de un mensaje del PC1 al servidor por medio del comando telnet que nos permite especificar por que puerto salir, esto para poder ver de manera detallada como se comporta el mensaje dependiendo el puerto con por el que salga. Primero haremos la prueba con el puerto 80.
