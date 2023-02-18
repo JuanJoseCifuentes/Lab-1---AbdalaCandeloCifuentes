@@ -459,11 +459,10 @@ Se puede ver que el mensaje fue mandado y recibido de manera correcta, por lo qu
 
 Podemos ver que esta vez nos manifiesta que el puerto tiene acceso y por ello deja se deja pasar la información hasta el servidor quien posteriormente reenviara un mensaje para confirmar la conexión.
 
-# Finalización
+# Resultados del análisis
 ## Retos
 
 Después de haber realizado el laboratorio, podemos determinar que quizá los mayores retos que manejamos fue a la hora de desarrollar el enrutamiento y las Access Control List, pues por diversas y lamentablemente desconocidas situaciones, a veces estas dos partes tan importantes del proyecto fallaban sin razón aparente. En el caso del enrutamiento, en más de una ocasión, las tablas de enrutamiento se quedaron vacías incluso después de haber comprobado que el protocolo EIGRP había funcionado de manera correcta, lo cual genero dificultades a la hora de probar conectividad en toda la topología. Y en el caso de las Access Control List, consideramos que quizá por errores mínimos en la redacción de las condiciones, se negaba el acceso a toda una intranet sin si quiera mencionarla en las limitantes, por lo que fue necesario redactarlas varias veces. Sin embargo, se supo afrontar estas dificultades y lograr finalizar la práctica de laboratorio.
-
 
 ## Recomendaciones
 
@@ -477,3 +476,14 @@ Finalmente, creemos que es de suprema importancia manejar el funcionamiento bás
 
 Adicionalmente, consideramos que fue de vital ayuda la realización ordenada de todas las tablas de direccionamiento con el propósito de mejorar la eficiencia a la hora de desarrollar el laboratorio.
 
+## Conclusiones
+
+En primer lugar, el desarrollo de este laboratorio nos recordó nuestros conocimientos del semestre pasado en cuanto a el manejo de Packet Tracer, y la configuración general de dispositivos de red.
+
+Más importante, sin embargo, este laboratorio se encargó sobre todo de enseñarnos a manejar nuevos protocolos de internet. El aprendizaje más vital de todos fue el manejo de listas de acceso, puesto que son básicamente requisito de otros protocolos importantes para el laboratorio como el NAT. 
+
+Las listas de acceso nos presentan una serie de nuevas opciones a la hora de diseñar una red mediante la capacidad de poder bloquear con relativa facilidad el acceso de ciertas partes de la red a las funcionalidades que nosotros elijamos, y esto, como bien pudimos ver en el ejemplo de la página web, puede fortalecer la seguridad de nuestra red y aumentar su productividad.
+
+Además de esto, el uso de protocolos de enrutamiento a lo largo de redes WAN un poco más compleja nos ayuda a ilustrar mucho más fácilmente la forma en la que el internet funciona en el mundo real, y nos permite ser capaces de asociar nuestro conocimiento teórico a la realidad.
+
+Por último, este laboratorio nos recuerda la importancia de desarrollar correctamente la planeación de la red antes de ponerla en práctica, para que su implementación sea lo más fácil posible teniendo en cuenta los tipicos errores que surgen durante el proceso.
