@@ -110,10 +110,6 @@ Finalmente con los Subneteos terminados pasamos a la construcción de la tabla d
 
 ![Tabla de direccionamiento en la red empresarial](/img/TABLA_DIRECCIONAMIENTO.png)
 
-
-
-
-=======
 # Configuración
 
 ## Configuraciones básicas:
