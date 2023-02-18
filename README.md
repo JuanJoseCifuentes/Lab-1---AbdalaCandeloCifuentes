@@ -2,10 +2,7 @@
 ## Juan José Cifuentes Cuellar
 ## Tomas Candelo Montoya
 ## Carlos Farouk Abdalá Rincón 
-> ```
-Wiki documentación elaborada para el primer laboratorio de la materia de Administración de Redes
 
-<<<<<<< HEAD
 # Planificación
 ## Preguntas
 **¿Cuántas subredes se necesitan?**     
@@ -311,6 +308,7 @@ ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta v
 >MLSW(config-if-range)# switchport access native vlan 2
 
 como se puede ver en la siguiente imagen:
+
 ![SHOW RUNNING-CONFIG DEL MULTILAYER SWITCH](/img/CONFIG_MULTILAYER.png)
 
 Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de res 255.255.254.0) 
@@ -320,6 +318,7 @@ Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación
 >MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
 
 y por ultimo se le asigno la puerta de acceso 10.111.4.1 
+
 >```
 >MLSW(config)#ip default-gateway 10.111.4.1 
 ## Access Control Lists (ACL's)
