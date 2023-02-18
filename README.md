@@ -5,7 +5,164 @@
 > ```
 Wiki documentación elaborada para el primer laboratorio de la materia de Administración de Redes
 
+# Planificación
+## Preguntas
+**¿Cuántas subredes se necesitan?**     
+En total necesitamos 5 subredes: La intranet de Bogotá (que cuenta con la vlan 50, 100 y 99 nombradas ing, tech y nativa respectivamente), la intranet de Madrid (que cuenta con la vlan 25, 100 y 99 nombradas Tesorería, Vice y nativa respectivamente), el espacio DMZ, la conexión entre el router de Bogotá y el router ISP correspondiente, la conexión entre el router de Madrid y el router ISP que le corresponde y el espacio de redes WAN
+
+**¿Cuántos host/interfaces necesita la subred, y que dispositivos se encuentran en ella?**  
+•	La intranet de Bogotá 172.17.0.0/16 para un total de 950 para cada una de las vlans de esta (50,100,99), en esta se encuentran 4 PC’s, 3 switches, 1 router y un servidor DHCP  
+•	La intranet de Madrid 10.111.0.0/16 para un total de 450 host por cada una de sus vlan (25,100,2), en esta se encuentran 4 PC’s, 32switches, 1 Multilayer switch y 1 router     
+•	Para el DMZ y el ISP_BOG 161.125.6.0/24 para un total de 6 host para el apartado DMZ, en el cual se encuentran 2 servidores (uno DMZ y uno de web_service) y 1 switch. Y 2 host para la ISP_BOG (conectividad entre el r1_BOG e ISP_BOG), en este se encuentran 2 routers       
+•	Para la ISP_ESP 216.169.1.0 para un total de solo 2 host (conectividad entre el R2_ESP e ISP_ESP) donde solo se encuentran los 2 routers mencionados        
+•	Por último, es el espacio de redes WAN la cual de igual manera necesitan 2 host por cada conexión con la que cuentan (un total de 5 conexiones, espacios de red), donde se encuentra un total de 4 routers 
+
+**¿Qué partes de la red utilizan direcciones publicas y que partes direcciones privadas?**      
+EN la topología las zonas que cuentan con direcciones IP privadas son las dos intranets presentes (Bogotá y Madrid) y las direcciones públicas están en la parte de internet o conexión WAN y en el DMZ donde están los servidores
+
+**¿Dónde deberían estar conservadas estas direcciones?**        
+Las direcciones están conservadas en todos los dispositivos presentes de la topología a excepción de los PC’s donde no es necesario que la tengan, pero si es necesario que estén conectados a la vlan que le corresponde según la guía del laboratorio.        
+
+Los routers generarían problemas en sus puertas de enlace si no las tuviese alojadas, , los servidores las conservan para mantener sus servicios y los switches lo tienen para no afectar el direccionamiento de las vlans troncales de la intranet (99 para la intranet de Bogotá y 2 para la intranet de España)
+
+**¿Se requiere una asignación dinámica y/o estática? ¿Donde?**
+
+Si, se necesitan los dos tipo de asignaciones, para las asignaciones estáticas estas se realizaron en los dispositivos que pertenecen a el DMZ, el espacio WAN y los routers de cada una de las dos intranet, estos se han de manera estática tanto por su naturaleza como por la necesidad de configuración que se tiene que satisfacer, en cuanto a la asignación dinámica se configuro un servidor con servicio DHCP para la intranet de Bogotá que permitirá la asignación dinámica para los PC’s y configuramos este mismo servicio en el R2_ESP para así hacer una asignación dinámica a la intranet de Madrid. 
+
+**¿Traducción de direcciones de forma dinámica y/o estática y/o por puertos?**
+
+El NAT se hace de manera dinámica, es decir que permite que cualquier dirección dentro de un rango dado se traduce a una dirección que solicite
+
+**¿En que terminal se configuraron los servicios requeridos?**
+
+Como ya fue mencionado el servicio DHCP se configuró en dos terminales diferentes, en su respectivo servidor en la intranet de Bogotá y en el router R2_ESP para la intranet de Madrid, otro servicio que se utilizo fue el DNS el cual se configuro dentro del servidor alojado en el DMZ al igual que le servidor web con su debido HTTP y HTTPS. Otro servicio utilizado fue el Access list para limitar el acceso al servidor web en las diferentes vlans según las especificaciones dadas en el documento del laboratorio. Por último el servicio NAT se necesita para hacer la traducción de las direcciones privadas, de las intranets, a direcciones públicas para poder acceder a la región del internet, este servicio esta configurado en cada uno de los routers que se conectan a las intranets (R1_BOG y R2_ESP)
+
+**¿Qué servicio de IPv4 se debe configurar para para limitar el acceso al servidor web por el puerto 80 y 443 en las vlans especificas?**
+
+Se necesita utilizar un acceso list que bloquee la puerta de enlace que se pide para la vlan que se pide, en este caso las condiciones que tenemos son las siguientes: 
+
+•	La intranet de Bogotá no tiene el acceso a la página por medio del servicio HTTP (puerto 80) solo tiene acceso por HTTPS (puerto 443), a excepción de la vlan de tecnología que puede acceder por ambos puertos
+
+•	En la intranet de Madrid la vlan de vicepresidencia no cuenta con acceso a ninguno de los dos servicios, tienen totalmente bloqueado el acceso a la pagina de internet alojada en el web Server
+
+•	Mientras que en la misma intranet la vlan de Tesorería solo pueden acceder a través del servicio HTTP (puerto 443) mas no puede usar HTTP (puerto 80)  
+
+Estos Access list se encuentra en los routers que conectan con cada una de las intranets (R1_BOG R2_ESP) con la configuración presentada en este mismo documento.
+
+**¿En que interfaces se deben configurar las OSPF o EIGRP (no RIP) y/o rutas estáticas?**
+
+Para el caso de este laboratorio se utilizo protocolo EIGRP como protocolo de enrutamiento dinámico para el campo de redes WAN, las interfaces que tienen configurados los router del internet son las direcciones de identificación de los puertos vecinos, para aprender las diferentes rutas con las que cuenta, la configuración de igual manera esta presente en este documento en el apartado de configuración de la topología
+
+## Subneteo
+
+La red empresarial cuenta con un total de 5 procedimientos de Subneteo
+
+•	La intranet de Bogotá 172.17.0.0/16 para un total de 950 para cada una de las vlans de esta (50,100,99)
+
+•	La intranet de Madrid 10.111.0.0/16 para un total de 450 host por cada una de sus vlan (25,100,2)
+
+•	Para el DMZ y el ISP_BOG 161.125.6.0/24 para un total de 6 host para el apartado DMZ y 2 host para la ISP_BOG (conectividad entre el r1_BOG e ISP_BOG)
+
+•	Para la ISP_ESP 216.169.1.0 para un total de solo 2 host (conectividad entre el R2_ESP e ISP_ESP)
+
+•	Por último, es el espacio de redes WAN la cual de igual manera necesitan 2 host por cada conexión con la que cuentan (un total de 5 conexiones, espacios de red)
+
+Para el proceso de Subneteo se tubo en cuenta la cantidad de host necesarios para cada espacio de direcciones y la cantidad de rengos de red que se necesitaran dependiente de las vlans o las conexiones.
+
+
+**Subneteo de la intranet de Bogotá**
+
+![SUBNETEO DE LA INTRANET DE BOGOTÁ](/img/subneteo_Bog.jpg.png)
+
+Para este Subneteo el numero de host pedidos por las especificaciones de la red es de 959 lo que da un total de 10 bits de reserva, lo que da una nueva mascara de sub red con identificador 22 y un incremento de 4 en el tercer octeto de la dirección, como se puede ver en la imagen se usaron 3 rangos de direcciones para las 3 vlans solicitadas (50 ing, 100 tech y la 99 nativa).
+
+**Subneteo de la intranet de Madrid**
+
+![SUBNETEO DE LA INTRANET DE MADRID](/img/SUBNETEO_MAD.png)
+
+Para este Subneteo el número de host pedidos por las especificaciones de la red es de 450 lo que da un total de 9 bits de reserva, lo que da una nueva mascara de subred con identificador 23 y un incremento de 2 en el tercer octeto de la dirección, como se puede ver en la imagen se usaron  de igual manera 3 rangos de direcciones para las 3 vlans solicitadas (25 Tesoreria, 100 Vice y la 2 nativa).
+
+**Subneteo del DMZ**
+
+![SUBNETO DE LA RED DMZ](/img/SUBNETEO_DMZ.png)
+
+Para este Subneteo el número de host pedidos por las especificaciones de la red es de 6 lo que da un total de 3 bits de reserva, lo que da una nueva mascara de subred con identificador 29 y un incremento de 8 en el cuarto octeto de la dirección en este caso solo necesitamos un rango de red como se ve en la imagen
+
+**Subneteo del ISP_BOG**
+
+![SUBNETO DE LA ISP DE BOGOTA](/img/SUBNETEO_ISP_BOG.png)
+
+Para este Subneteo el número de host pedidos por las especificaciones de la red es de 2 lo que da un total de 2 bits de reserva, lo que da una nueva mascara de subred con identificador 30 y un incremento de 4 en el cuarto octeto de la dirección. En este caso solo necesitamos un rango para la conexión entre el R1_BOG e ISP_BOG
+
+**Subneteo del ISP_ESP**
+
+![SUBNETO DE LA RED ISP DE ESPAÑA](/img/SUBNETEO_ISP_ESP.png)
+
+Para este Subneteo el número de host pedidos por las especificaciones de la red es de 2 lo que da un total de 2 bits de reserva, lo que da una nueva mascara de subred con identificador 30 y un incremento de 4 en el cuarto octeto de la dirección. En este caso solo necesitamos un rango para la conexión entre el R2_ESP e ISP_ESP 
+
+**Subneteo del espacio WAN**
+
+![SUBNETO DEL ESPACIO WAN(INTERNET)](/img/SUBNETEO_WAN.png)
+
+Para este Subneteo el número de host pedidos por las especificaciones de la red es de 2 lo que da un total de 2 bits de reserva, lo que da una nueva mascara de subred con identificador 30 y un incremento de 4 en el cuarto octeto de la dirección. En este caso son necesarios 5 rangos de red para las conexiones entre los routers que pertenecen al internet 
+
+## Tabla de direccionamiento
+
+Finalmente con los Subneteos terminados pasamos a la construcción de la tabla de enrutamiento en la cual asignamos las direcciones IP a los diferentes dispositivos de la red y en los puertos que deben de ser asignadas, el resultado de esas asignaciones fue la siguiente tabla:
+
+![Tabla de direccionamiento en la red empresarial](/img/TABLA_DIRECCIONAMIENTO.png)
+
 # Configuarción
+
+## Multilayer switch 
+
+**Requerimientos**
+Se necesita utilizar un multilayer switch de numero de referencia 3650
+
+**configuración**
+Un multilayer switch es un switch que funciona como un dispositivo de capa 3, para el caso del laboratorio lo utilizaremos como el puente entre la intranet de Madrid con el router de España, la configuración que se utilizo para este se extrajo de un video se YouTube y de diferentes foros . Lo primero es que estuviese configurado todo lo relacionado con los switches y las configuraciones de las vlan en cada uno de ellos, después de eso se realizó la configuración básica que se realiza en todos los dispositivos, la asignación de las contraseñas y el nombre para el multilayer, una vez estas configuraciones completadas, lo primero que se hizo fue crear las vlans dentro del multilayer con los comandos ya aprendidos en proyectos anteriores,
+>```
+>MLSW(config)#VLAN 25
+>
+>MLSW(config-vlan)#name Tesoreria
+>
+>MLSW(config-vlan)#vlan 50
+>
+>MLSW(config-vlan)#name Vice
+>
+>MLSW(config-vlan)#vlan 2
+>
+>MLSW(config-vlan)#name Nativa
+
+luego se configuro el enlace troncal en el rango de interfaces del gigabit Ethernet 1/0/1 y el gigabit Ethernet 1/0/3 en el cual se hizo la configuración de la vlan 2 como la nativa para el procedimiento del truncamiento,
+>```
+>MLSW(config)#interface range gig 1/0/1-3
+>
+>MLSW(config-if-range)# switchport mode trunk
+>
+>MLSW(config-if-range)# switchport trunk native vlan 2
+
+ahora por la interfaz gigabit Ethernet 1/0/1 se le concederá el acceso a esta vlan 2 
+>```
+>MLSW(config)#interface gig 1/0/1
+>
+>MLSW(config-if-range)# switchport mode access
+>
+>MLSW(config-if-range)# switchport access native vlan 2
+
+como se puede ver en la siguiente imagen:
+![SHOW RUNNING-CONFIG DEL MULTILAYER SWITCH](/img/CONFIG_MULTILAYER.png)
+
+Después de esto se ingreso a la interfaz de la vlan 2 para hacer la asignación de la dirección ip que le corresponde a nuestro switch la cual hace parte del conjunto de redes para esta vlan (10.111.4.4 con una mascara de res 255.255.254.0) 
+>```
+>MLSW(config)#interface VLAN 2
+>
+>MLSW(config-if-range)# IP address 10.111.4.4 255.255.254.0
+
+y por ultimo se le asigno la puerta de acceso 10.111.4.1 
+>```
+>MLSW(config)#ip default-gateway 10.111.4.1 
+
 ## Access Control Lists (ACL's)
 **Requerimientos**: El Departamento de Tecnología solicitó los siguientes filtros de paquetes: Todos los hosts de la Intranet Bogotá acceden al servidor Web a través del protocolo HTTPs (puerto 443) y no por HTTP (puerto 80). Los usuarios del área de Vicepresidencia en la Intranet Madrid deben tener restringido el acceso al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). Los usuarios del Departamento de Tesorería sólo deben acceder al servidor Web por el puerto 443. Finalmente, El Departamento de Tecnología accede al servidor Web por HTTPs (puerto 443) y HTTP (puerto 80). 
 
